@@ -2,32 +2,41 @@
 
 namespace App\Controller;
 
+use App\Entity\Todos;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TodosController extends AbstractController
 {
-    public function showTodos(Connection $connection)
+    public function showTodos()
     {
         if (isset($_GET['all']) && $_GET['all'] == '1') {
-            $todos = $connection->fetchAll('SELECT t.* FROM todos t');
+            $r = $this->getDoctrine()->getRepository(Todos::class);
+            $todos = $r->findNext(0, 20);
         } else {
-            $todos = $connection->fetchAll('SELECT t.* FROM todos t WHERE completed = 0');
+            $r = $this->getDoctrine()->getRepository(Todos::class);
+            $todos = $r->findNextByCompleted(false, 0, 20);
         }
 
         return $this->render('showTodos.html.twig', ['todos' => $todos]);
     }
 
-    public function completeTodo(Connection $connection)
+    public function completeTodo()
     {
-        $connection->executeQuery('UPDATE todos SET completed = 1 WHERE id = ' . $_GET['id']);
+        $r = $this->getDoctrine()->getManager()->getRepository(Todos::class);
+        $todo = $r->find($_GET['id']);
+        $todo->setCompleted(true);
+        $todo->flush();
 
         return $this->redirect('/');
     }
 
-    public function uncompleteTodo(Connection $connection)
+    public function uncompleteTodo()
     {
-        $connection->executeQuery('UPDATE todos SET completed = 0 WHERE id = ' . $_GET['id']);
+        $r = $this->getDoctrine()->getManager()->getRepository(Todos::class);
+        $todo = $r->find($_GET['id']);
+        $todo->setCompleted(false);
+        $todo->flush();
 
         return $this->redirect('/');
     }
