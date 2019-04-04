@@ -1,0 +1,27 @@
+version: '3.2'
+services:
+  mysql:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - /var/lib/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root3
+      MYSQL_DATABASE: symfony-refactoring-exercise
+      MYSQL_USER: symfony-refactoring-exercise
+      MYSQL_PASSWORD: root1
+  php-fpm:
+    build: ./php-fpm
+    volumes:
+      - ..:/app
+  nginx:
+    image: nginx
+    volumes:
+      - ./system-files/etc/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - target: 80
+        published: 8080
+        protocol: tcp
+        mode: host
+    command: nginx -g 'daemon off;'
