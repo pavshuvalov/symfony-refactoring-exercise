@@ -1,11 +1,10 @@
 showTodos:
-  path: /
-  controller: App\Controller\TodosController::showTodos
+  path: /todo
+  controller: App\Controller\TodosController::getTodos
 
 completeTodo:
-  path: /complete
-  controller: App\Controller\TodosController::completeTodo
-
-uncompleteTodo:
-  path: /uncomplete
-  controller: App\Controller\TodosController::uncompleteTodo
+  path: /todo/{id}
+  controller: App\Controller\TodosController::tryChangeTodo
+  methods: PATCH
+  requirements:
+    id: '\d+'
