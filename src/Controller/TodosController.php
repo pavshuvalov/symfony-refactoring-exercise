@@ -16,17 +16,22 @@ class TodosController extends MyController
         $length = $r->query->getInt('length', 20);
 
         // do not work with bad parameters
-        if ($offset < 0) {
+        if ($offset < 0)
+        {
             return $this->error(['message' => 'offset < 0']);
         }
-        if ($length < 1 || $length > 200) {
+        if ($length < 1 || $length > 200)
+        {
             return $this->error(['message' => 'length not in 1..200']);
         }
 
         $r = $this->getDoctrine()->getRepository(Todos::class);
-        if ($all == 1) {
+        if ($all == 1)
+        {
             $todos = $r->findNext($offset, $length);
-        } else {
+        }
+        else
+        {
             $todos = $r->findNextByCompleted(false, $offset, $length);
         }
 
