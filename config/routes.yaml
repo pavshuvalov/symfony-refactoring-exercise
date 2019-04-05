@@ -7,4 +7,4 @@ completeTodo:
   controller: App\Controller\TodosController::tryChangeTodo
   methods: PATCH
   requirements:
-    id: '\d+'
+    id: '[1-9][0-9]*'
