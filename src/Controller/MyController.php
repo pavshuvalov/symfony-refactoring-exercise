@@ -28,10 +28,12 @@ class MyController extends AbstractController
 
 	protected function ok(array $response = []):JsonResponse
 	{
-		return new JsonResponse([
+		$r = new JsonResponse([
 			'status' => 'ok',
 			'response' => count($response) < 1 ? (object) [] : $response,
 		]);
+		$r->headers->set('content-type', 'application/json');
+		return $r;
 	}
 
 	protected function error(array $response = []):JsonResponse
@@ -40,6 +42,7 @@ class MyController extends AbstractController
 			'status' => 'error',
 			'response' => count($response) < 1 ? (object) [] : $response,
 		]);
+		$r->headers->set('content-type', 'application/json');
 		$r->setStatusCode(Response::HTTP_BAD_REQUEST);
 		return $r;
 	}
