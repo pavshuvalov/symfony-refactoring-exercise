@@ -34,23 +34,15 @@ class Metric
      */
     private $extra;
 
+    function __construct(string $key, int $value, array $extra)
+    {
+        $this->key = $key;
+        $this->value = $value;
+        $this->extra = $extra;
+    }
+
     public function incValue(): void
     {
         $this->value++;
-    }
-
-    public function setKey(string $key): void
-    {
-        $this->key = $key;
-    }
-
-    public function setValue(string $value): void
-    {
-        $this->value = $value;
-    }
-
-    public function setExtra(array $extra): void
-    {
-        $this->extra = $extra;
     }
 }

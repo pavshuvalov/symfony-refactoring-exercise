@@ -74,10 +74,12 @@ class MyController extends AbstractController
 		}
 		else
 		{
-			$entity = new Metric();
-			$entity->setKey($row);
-			$entity->setValue(1);
-			$entity->setExtra([]);
+			$entity = new Metric
+			(
+				$row, // key
+				1,    // value
+				[]    // extra
+			);
 			$em->persist($entity);
 		}
 		$em->flush();
