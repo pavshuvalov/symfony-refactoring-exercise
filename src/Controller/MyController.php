@@ -5,33 +5,25 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class MyController extends AbstractController
 {
-	// dependency injection through constructor 
-	private $request;
-
-	function __construct()
+	/*
+		If content-type is application/json and the request body is a valid JSON,
+		make $request->request contain parsed request body
+	*/
+	protected function parseJsonBody(Request $request):void
 	{
-		/*
-			If content-type is application/json and the request body is a valid JSON,
-			make $request->request contain parsed request body
-		*/
-		$this->request = Request::createFromGlobals();
-		$ct = $this->request->headers->get('content-type');
+		$ct = $request->headers->get('content-type');
 		if ($ct == 'application/json') {
-			$parsed_json_body = json_decode($this->request->getContent(), true);
+			$parsed_json_body = json_decode($request->getContent(), true);
 
 			// is valid JSON
 			if (isset($parsed_json_body)) {
-				$this->request->request->replace($parsed_json_body);
+				$request->request->replace($parsed_json_body);
 			}
 		}
-	}
-
-	protected function getRequest():Request
-	{
-		return $this->request;
 	}
 
 	protected function ok(array $response = []):JsonResponse
@@ -44,9 +36,11 @@ class MyController extends AbstractController
 
 	protected function error(array $response = []):JsonResponse
 	{
-		return new JsonResponse([
+		$r = new JsonResponse([
 			'status' => 'error',
 			'response' => count($response) < 1 ? (object) [] : $response,
 		]);
+		$r->setStatusCode(Response::HTTP_BAD_REQUEST);
+		return $r;
 	}
 }

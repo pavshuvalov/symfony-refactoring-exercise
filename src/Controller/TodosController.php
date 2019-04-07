@@ -8,9 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TodosController extends MyController
 {
-    public function getTodos()
+    public function getTodos(Request $r)
     {
-        $r = $this->getRequest();
         $all = $r->query->getInt('all', 0);
         $offset = $r->query->getInt('offset', 0);
         $length = $r->query->getInt('length', 20);
@@ -49,15 +48,17 @@ class TodosController extends MyController
         return $this->ok($response);
     }
 
-    public function tryChangeTodo(Request $request, int $id)
+    public function tryChangeTodo(Request $r, int $id)
     {
+        $this->parseJsonBody($r);
+
         // nothing to change
-        if (!$this->getRequest()->request->has('completed'))
+        if (!$r->request->has('completed'))
         {
             return $this->ok();
         }
 
-        $completed = $this->getRequest()->request->getBoolean('completed');
+        $completed = $r->request->getBoolean('completed');
         $em = $this->getDoctrine()->getManager();
         $todo = $em->getRepository(Todos::class)->find($id);
         $todo->setCompleted($completed);
