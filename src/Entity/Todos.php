@@ -15,7 +15,7 @@ class Todos
     /**
      * @var int
      *
-     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Column(name="`id`", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -24,14 +24,14 @@ class Todos
     /**
      * @var string
      *
-     * @ORM\Column(name="text", type="string", length=255, nullable=false)
+     * @ORM\Column(name="`text`", type="string", length=255, nullable=false)
      */
     private $text;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="completed", type="integer", nullable=false)
+     * @ORM\Column(name="`completed`", type="integer", nullable=false)
      */
     private $completed;
 
