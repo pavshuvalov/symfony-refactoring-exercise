@@ -38,7 +38,7 @@
 
 ```json
 {
-	"completed": 1
+	"completed": true
 }
 ```
 
