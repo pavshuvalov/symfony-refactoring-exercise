@@ -90,7 +90,7 @@ class MyController extends AbstractController
 		$r = $em->getRepository(AntispamIp::class);
 		$entity = $r->find(['ipv4' => $ip, 'key' => $block['key']]);
 
-		// if entry is not created yet, create it with default values
+		// if antispam entry is not created yet, create it with default values
 		if (!isset($entity))
 		{
 			$entity = new AntispamIp
