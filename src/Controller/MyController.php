@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Repository\TodosRepository;
+use App\Repository\MetricRepository;
+use App\Repository\AntispamIpRepository;
 use App\Entity\Service\AntispamIp;
 use App\Entity\Stat\Metric;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,6 +14,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class MyController extends AbstractController
 {
+	function __construct(TodosRepository $todosRepository, MetricRepository $metricRepository, AntispamIpRepository $antispamIpRepository)
+	{
+		$this->todosRepository = $todosRepository;
+		$this->metricRepository = $metricRepository;
+		$this->antispamIpRepository = $antispamIpRepository;
+	}
+
 	/*
 		If content-type is application/json and the request body is a valid JSON,
 		make $request->request contain parsed request body
@@ -65,9 +75,7 @@ class MyController extends AbstractController
 
 	protected function incMetric(string $row)
 	{
-		$em = $this->getDoctrine()->getManager('stat');
-		$r = $em->getRepository(Metric::class);
-		$entity = $r->find($row);
+		$entity = $this->metricRepository->find($row);
 		if (isset($entity))
 		{
 			$entity->incValue();
@@ -80,16 +88,18 @@ class MyController extends AbstractController
 				1,    // value
 				[]    // extra
 			);
-			$em->persist($entity);
 		}
+
+		// save object
+		$em = $this->getDoctrine()->getManager('stat');
+		$em->persist($entity);
 		$em->flush();
     }
 
 	protected function isBlockedByIP(string $ip, array $block, string $stat_row = null): bool
 	{
 		$em = $this->getDoctrine()->getManager('service');
-		$r = $em->getRepository(AntispamIp::class);
-		$entity = $r->find(['ipv4' => $ip, 'key' => $block['key']]);
+		$entity = $this->antispamIpRepository->find(['ipv4' => $ip, 'key' => $block['key']]);
 
 		// if antispam entry is not created yet, create it with default values
 		if (!isset($entity))

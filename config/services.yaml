@@ -28,3 +28,21 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    app.todo_repository:
+        class: App\Repository\TodosRepository
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - App\Entity\Main\Todos
+
+    app.metric_repository:
+        class: App\Repository\MetricRepository
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - App\Entity\Stat\Metric
+
+    app.antispam_ip_repository:
+        class: App\Repository\AntispamIpRepository
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - App\Entity\Service/AntispamIp

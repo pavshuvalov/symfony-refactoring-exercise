@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\TodosRepository;
 use App\Entity\Main\Todos;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,14 +55,13 @@ class TodosController extends MyController
             return $this->antispam();
         }
 
-        $r = $this->getDoctrine()->getRepository(Todos::class);
         if ($all == 1)
         {
-            $todos = $r->findNext($offset, $length);
+            $todos = $this->todosRepository->findNext($offset, $length);
         }
         else
         {
-            $todos = $r->findNextByCompleted(false, $offset, $length);
+            $todos = $this->todosRepository->findNextByCompleted(false, $offset, $length);
         }
 
         $response = [
@@ -97,8 +97,7 @@ class TodosController extends MyController
             return $this->antispam();
         }
 
-        $em = $this->getDoctrine()->getManager('default');
-        $todo = $em->getRepository(Todos::class)->find($id);
+        $todo = $this->todosRepository->find($id);
 
         // unknown id, nothing to change
         if (!isset($todo))
@@ -108,7 +107,12 @@ class TodosController extends MyController
         }
 
         $todo->setCompleted($completed);
+
+        // save object
+        $em = $this->getDoctrine()->getManager('default');
+        $em->persist($todo);
         $em->flush();
+
         return $this->ok();
     }
 }
