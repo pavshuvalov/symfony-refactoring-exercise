@@ -61,6 +61,13 @@ class TodosController extends MyController
         $completed = $r->request->getBoolean('completed');
         $em = $this->getDoctrine()->getManager();
         $todo = $em->getRepository(Todos::class)->find($id);
+
+        // unknown id, nothing to change
+        if (!isset($todo))
+        {
+            return $this->error(['message' => 'unknown id, nothing to change']);
+        }
+
         $todo->setCompleted($completed);
         $em->flush();
         return $this->ok();
