@@ -1,0 +1,5 @@
+migrations_directory: 'src/Migrations/Main'
+
+# namespace is arbitrary but should be different from App\Migrations
+# as migrations classes should NOT be autoloaded
+migrations_namespace: DoctrineMigrations\Main

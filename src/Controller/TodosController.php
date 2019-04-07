@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Todos;
+use App\Entity\Main\Todos;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManager;
@@ -47,10 +47,9 @@ class TodosController extends MyController
             return $this->error(['message' => 'length not in 1..200']);
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $this->incMetric($em, 'row40');
+        $this->incMetric('row40');
 
-        if ($this->isBlockedByIP($em, $request->getClientIp(), self::_GET_TODOS_BLOCK, 'row39'))
+        if ($this->isBlockedByIP($request->getClientIp(), self::_GET_TODOS_BLOCK, 'row39'))
         {
             return $this->antispam();
         }
@@ -91,20 +90,20 @@ class TodosController extends MyController
 
         $completed = $request->request->getBoolean('completed');
 
-        $em = $this->getDoctrine()->getManager();
-        $this->incMetric($em, 'row80');
+        $this->incMetric('row80');
 
-        if ($this->isBlockedByIP($em, $request->getClientIp(), self::_TRY_CHANGE_TODO_BLOCK, 'row78'))
+        if ($this->isBlockedByIP($request->getClientIp(), self::_TRY_CHANGE_TODO_BLOCK, 'row78'))
         {
             return $this->antispam();
         }
 
+        $em = $this->getDoctrine()->getManager('default');
         $todo = $em->getRepository(Todos::class)->find($id);
 
         // unknown id, nothing to change
         if (!isset($todo))
         {
-            $this->incMetric($em, 'row79');
+            $this->incMetric('row79');
             return $this->error(['message' => 'unknown id, nothing to change']);
         }
 

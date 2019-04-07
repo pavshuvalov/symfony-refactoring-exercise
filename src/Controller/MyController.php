@@ -2,13 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\Metric;
-use App\Entity\AntispamIp;
+use App\Entity\Service\AntispamIp;
+use App\Entity\Stat\Metric;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Doctrine\ORM\EntityManager;
 
 class MyController extends AbstractController
 {
@@ -64,8 +63,9 @@ class MyController extends AbstractController
 		return $r;
 	}
 
-	protected function incMetric(EntityManager $em, string $row)
+	protected function incMetric(string $row)
 	{
+		$em = $this->getDoctrine()->getManager('stat');
 		$r = $em->getRepository(Metric::class);
 		$entity = $r->find($row);
 		if (isset($entity))
@@ -85,8 +85,9 @@ class MyController extends AbstractController
 		$em->flush();
     }
 
-	protected function isBlockedByIP(EntityManager $em, string $ip, array $block, string $stat_row = null): bool
+	protected function isBlockedByIP(string $ip, array $block, string $stat_row = null): bool
 	{
+		$em = $this->getDoctrine()->getManager('service');
 		$r = $em->getRepository(AntispamIp::class);
 		$entity = $r->find(['ipv4' => $ip, 'key' => $block['key']]);
 
@@ -118,7 +119,7 @@ class MyController extends AbstractController
 			// collect stat if needed (only 1 time per block!)
 			if (isset($stat_row) && !$entity->getIsStatSent())
 			{
-				$this->incMetric($em, $stat_row);
+				$this->incMetric($stat_row);
 				$entity->setIsStatSent(true);
 
 				// update antispam data

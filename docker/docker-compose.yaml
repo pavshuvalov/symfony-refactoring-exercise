@@ -1,15 +1,37 @@
 version: '3.2'
 services:
-  mysql:
+  mysql-default:
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
-    volumes:
-      - /var/lib/mysql:/var/lib/mysql
+#    volumes:
+#      - /var/lib/mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: root3
-      MYSQL_DATABASE: symfony-refactoring-exercise
-      MYSQL_USER: symfony-refactoring-exercise
+      MYSQL_DATABASE: default
+      MYSQL_USER: default
+      MYSQL_PASSWORD: root1
+  mysql-stat:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+#    volumes:
+#      - /var/lib/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root3
+      MYSQL_DATABASE: stat
+      MYSQL_USER: stat
+      MYSQL_PASSWORD: root1
+  mysql-service:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+#    volumes:
+#      - /var/lib/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root3
+      MYSQL_DATABASE: service
+      MYSQL_USER: service
       MYSQL_PASSWORD: root1
   php-fpm:
     build: ./php-fpm
