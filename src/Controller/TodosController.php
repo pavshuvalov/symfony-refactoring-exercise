@@ -31,11 +31,11 @@ class TodosController extends MyController
     // Public Controller Methods
     // -------------------------------------------------------
 
-    public function getTodos(Request $r)
+    public function getTodos(Request $request)
     {
-        $all = $r->query->getInt('all', 0);
-        $offset = $r->query->getInt('offset', 0);
-        $length = $r->query->getInt('length', 20);
+        $all = $request->query->getInt('all', 0);
+        $offset = $request->query->getInt('offset', 0);
+        $length = $request->query->getInt('length', 20);
 
         // do not work with bad parameters
         if ($offset < 0)
@@ -50,7 +50,7 @@ class TodosController extends MyController
         $em = $this->getDoctrine()->getManager();
         $this->incMetric($em, 'row40');
 
-        if ($this->isBlockedByIP($em, $r->getClientIp(), self::_GET_TODOS_BLOCK, 'row39'))
+        if ($this->isBlockedByIP($em, $request->getClientIp(), self::_GET_TODOS_BLOCK, 'row39'))
         {
             return $this->antispam();
         }
@@ -79,22 +79,22 @@ class TodosController extends MyController
         return $this->ok($response);
     }
 
-    public function tryChangeTodo(Request $r, int $id)
+    public function tryChangeTodo(Request $request, int $id)
     {
-        $this->parseJsonBody($r);
+        $this->parseJsonBody($request);
 
         // nothing to change
-        if (!$r->request->has('completed'))
+        if (!$request->request->has('completed'))
         {
             return $this->ok();
         }
 
-        $completed = $r->request->getBoolean('completed');
+        $completed = $request->request->getBoolean('completed');
 
         $em = $this->getDoctrine()->getManager();
         $this->incMetric($em, 'row80');
 
-        if ($this->isBlockedByIP($em, $r->getClientIp(), self::_TRY_CHANGE_TODO_BLOCK, 'row78'))
+        if ($this->isBlockedByIP($em, $request->getClientIp(), self::_TRY_CHANGE_TODO_BLOCK, 'row78'))
         {
             return $this->antispam();
         }
