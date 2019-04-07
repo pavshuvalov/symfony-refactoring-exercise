@@ -112,7 +112,7 @@ class MyController extends AbstractController
 			$entity->setIsStatSent(false);
 		}
 
-		// if limit is over, used need to be blocked
+		// if limit is over, user need to be blocked
 		if ($entity->getCount() >= $block['count'])
 		{
 			// collect stat if needed (only 1 time per block!)
